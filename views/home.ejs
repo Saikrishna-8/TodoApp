@@ -1,0 +1,142 @@
+<!-- index.ejs -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>TodoApp</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        #todo-container {
+            width: 80%;
+            margin: auto;
+            display: block;
+            text-align: center;
+        }
+
+        .task-row {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .task-row label {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .task-row input[type="text"],
+        .task-row select,
+        .task-row input[type="date"],
+        .task-row input[type="submit"],
+        .task-row input[type="button"] {
+            margin-right: 10px;
+        }
+
+        .task-row input[type="text"] {
+            flex-grow: 1;
+        }
+
+        .task-row select {
+            width: 200px;
+        }
+
+        .task-row .category {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .task-row .category.personal {
+            background-color: #ff8080;
+        }
+
+        .task-row .category.work {
+            background-color: #80b3ff;
+        }
+
+        .task-row .category.shopping {
+            background-color: #ffff80;
+        }
+
+        .task-row .category.home {
+            background-color: #b3ffb3;
+        }
+
+        .task-row .category.other {
+            background-color: #bfbfbf;
+        }
+
+        .task-row .delete-button {
+            background-color: #ff3333;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .task-row .delete-button:hover {
+            background-color: #e60000;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="todo-container">
+        <h1>TodoApp</h1>
+        <form action="/" method="POST">
+            <div class="task-row">
+                <label for="description">Description:</label>
+                <input type="text" name="description" id="description" placeholder="Enter task description...">
+            </div>
+            <div class="task-row">
+                <label for="category">Category:</label>
+                <select name="category" id="category">
+                    <option value="personal">Personal</option>
+                    <option value="work">Work</option>
+                    <option value="shopping">Shopping</option>
+                    <option value="home">Home</option>
+                    <option value="other">Other</option>
+                </select>
+                <label for="due-date">Due Date:</label>
+                <input type="date" name="dueDate" id="due-date">
+                <br />
+
+            </div>
+            <div class="task-row">
+                <input type="button" value="Delete Task">
+                <input type="submit" value="Add Task">
+            </div>
+
+        </form>
+
+    </div>
+
+    <script>
+        const deleteButtons = document.querySelectorAll('.delete-button');
+        deleteButtons.forEach(function (button) {
+            button.addEventListener('click', function () {
+                const taskRow = this.parentElement;
+                const taskId = taskRow.querySelector('input[type="checkbox"]').value;
+                const form = document.createElement('form');
+                form.action = '/';
+                form.method = 'POST';
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'deleteTaskId';
+                input.value = taskId;
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
+            });
+        });
+    </script>
+</body>
+
+</html>
