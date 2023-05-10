@@ -8,10 +8,13 @@ app.set("views", "./views");
 
 
 
-app.get('/', (req, res) => {
-    return res.render('home');
-});
+// app.get('/', (req, res) => {
+//     return res.render('home');
+// });
 
+// it will divert or routes  to index.js of routes folder, 
+//there it will start matching  
+app.use('/',require('./routes'));
 
 app.listen(port, (err) => {
     if (err) {
