@@ -86,13 +86,46 @@
         .task-row .delete-button:hover {
             background-color: #e60000;
         }
+
+
+
+        /* Todo Task list Styles  */
+
+        .todoList {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .todoList .category {
+            padding: 5px;
+            border-radius: 5px;
+            color: white;
+        }
+
+        .category1 .work {
+            background-color: #f9c74f;
+        }
+
+        .category1 .study {
+            background-color: #4a4e69;
+        }
+
+        .category1 .home {
+            background-color: #f94144;
+        }
+
+        .category1 .personal {
+            background-color: #43aa8b;
+        }
     </style>
 </head>
 
 <body>
     <div id="todo-container">
         <h1>TodoApp</h1>
-        <form action="/" method="POST">
+        <form action="/todo" method="POST">
             <div class="task-row">
                 <label for="description">Description:</label>
                 <input type="text" name="description" id="description" placeholder="Enter task description...">
@@ -100,11 +133,14 @@
             <div class="task-row">
                 <label for="category">Category:</label>
                 <select name="category" id="category">
-                    <option value="personal">Personal</option>
-                    <option value="work">Work</option>
-                    <option value="shopping">Shopping</option>
-                    <option value="home">Home</option>
-                    <option value="other">Other</option>
+                    <% cats.forEach(category=>{ %>
+
+                        <option value="<%= category._id %>">
+                            <%= category.name %>
+                        </option>
+
+                        <% }); %>
+
                 </select>
                 <label for="due-date">Due Date:</label>
                 <input type="date" name="dueDate" id="due-date">
@@ -113,31 +149,89 @@
             </div>
             <div class="task-row">
                 <input type="submit" value="Add Task">
-                <input type="button" value="Delete Task">
+                <input type="button" value="Delete Task" class="delete-button">
             </div>
 
         </form>
 
     </div>
+    <div>
+
+        <% todos.forEach(function(todo) { %>
+            <div class="todosList task-row" style="display: flex;">
+                <div style="flex: 1;">
+                    <label><input type="checkbox" name="todoIds" value="<%= todo._id %>">Done</label>
+                    <!-- <label><input type="checkbox" name="todoIds">Done</label> -->
+                </div>
+
+                <div style="flex: 1;">
+                    <p style="color: black; font-size: medium;
+                    font-family: 'Courier New', Courier, monospace;
+                    font-variant: normal;
+                    font-weight: bold;
+                    ">
+                        <%= todo.description %>
+                    </p>
+                    <p style="color: #4a4e69; font-size: small; font-family: 'Courier New', Courier, monospace;">
+                        <%= todo.dueDate.toDateString() %>
+                    </p>
+                </div>
+
+
+                <div style="flex: 1;">
+                    <button class="category1 <%= todo.category.name %>">
+                        <%= todo.category.name %>
+                    </button>
+                </div>
+
+            </div>
+            <% }); %>
+
+    </div>
 
     <script>
         const deleteButtons = document.querySelectorAll('.delete-button');
+
         deleteButtons.forEach(function (button) {
             button.addEventListener('click', function () {
-                const taskRow = this.parentElement;
-                const taskId = taskRow.querySelector('input[type="checkbox"]').value;
-                const form = document.createElement('form');
-                form.action = '/';
-                form.method = 'POST';
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'deleteTaskId';
-                input.value = taskId;
-                form.appendChild(input);
-                document.body.appendChild(form);
-                form.submit();
+
+                //alert('Heloo');
+                deleteTodos();
             });
         });
+
+        // Get all checkbox elements
+        const checkboxes = document.querySelectorAll('input[name="todoIds"]');
+
+        var checkedIds1;
+
+        // Add event listener to each checkbox
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', event => {
+                // Get array of checked checkbox values
+                const checkedIds = Array.from(checkboxes)
+                    .filter(checkbox => checkbox.checked)
+                    .map(checkbox => checkbox.value);
+                // Logs array of checked checkbox values
+                console.log(checkedIds);
+
+                checkedIds1 = checkedIds
+                //deleteTodos(checkedIds);
+            });
+        });
+
+        function deleteTodos() {
+            const form = document.createElement('form');
+            form.action = '/deleteTodos';
+            form.method = 'POST';
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'deleteTaskId';
+            input.value = checkedIds1;
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
+        }
     </script>
 </body>
 

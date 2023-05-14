@@ -1,6 +1,14 @@
 const express = require('express');
+//const mdb=require('./config/mongooseDbCon');
 const app = express();
 const port = 8001;
+
+const bodyParser = require('body-parser');
+
+// Use body-parser middleware to parse form data
+app.use(bodyParser.urlencoded({ extended: true }));
+
+
 
 // set view engine and views folder
 app.set("view engine", "ejs");
